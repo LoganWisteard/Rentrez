@@ -1,0 +1,67 @@
+---
+title: "Sequence Data Assignment"
+author: "Logan Wisteard (20104157)"
+date: "16/02/2022"
+output: pdf_document
+---
+#GitHub username: LoganWisteard
+#link to GitHub repository:https://github.com/LoganWisteard/Rentrez
+
+#Load dplyr
+```{r}
+library(dplyr)
+```
+
+#Set working directory
+```{r}
+setwd("/Users/loganwisteard/Desktop/homefolder/Rentrez")
+```
+
+#Import sequences.csv file 
+```{r}
+sequences <- read.csv("./sequences.csv")
+```
+
+#Print each sequence
+```{r}
+print(sequences$Sequence)
+```
+
+#Count the number of each base pair (A, T, C and G), in each of the three sequences.
+```{r}
+nucleotides <- sequences %>% 
+  mutate(SequenceID = gsub(">(\\w+\\.\\d+).*", "\\1", sequences$Name),
+         A = nchar(gsub("[CTG]", "", sequences$Sequence)),
+         T = nchar(gsub("[ACG]", "", sequences$Sequence)),
+         C = nchar(gsub("[ATG]", "", sequences$Sequence)),
+         G = nchar(gsub("[ATC]", "", sequences$Sequence)))
+```
+
+#Print out the number of each nucleotide as a table for each of the three sequences.
+
+```{r}
+print(nucleotides[c("SequenceID", "A", "T", "C", "G")])
+```
+
+#Include an image of a bacteria from the internet, and a link to the Wikipedia page about Borrelia burgdorferi
+
+[Image of B. burgdorferi](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Borrelia_burgdorferi_%28CDC-PHIL_-6631%29_lores.jpg/330px-Borrelia_burgdorferi_%28CDC-PHIL_-6631%29_lores.jpg)  
+
+Wikipedia article on *Borrelia burgdorferi* (https://en.wikipedia.org/wiki/Borrelia_burgdorferi#:~:text=Borrelia%20burgdorferi%20is%20a%20bacterial,known%20to%20cause%20the%20disease) 
+
+
+#Calculate GC Content (% of nucleotides that are G or C) 
+```{r}
+nucleotides %>% summarise(SequenceID = SequenceID, GC = (C + G)/nchar(Sequence))
+```
+
+#create a final table showing GC content for each sequence ID
+```{r}
+GC_tab <- matrix(c("HQ433692.1", "44.28%", "HQ433694.1", "44.07%", "HQ433691.1", "44.07%"),ncol=2,byrow=TRUE)
+colnames(GC_tab) <- c("Sequence ID","GC Content")
+GC_tab<- as.table(GC_tab)
+print(GC_tab)
+```
+
+
+
